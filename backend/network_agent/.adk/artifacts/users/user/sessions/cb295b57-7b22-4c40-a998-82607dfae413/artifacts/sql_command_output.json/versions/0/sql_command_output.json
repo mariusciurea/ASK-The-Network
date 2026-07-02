@@ -1,0 +1,257 @@
+[
+  {
+    "alarm": "Backhaul Degradation",
+    "number_of_tickets": 32,
+    "description": "RoboNOC ticket for OXVVZ41; detected event: backhaul degradation"
+  },
+  {
+    "alarm": "Fiber Cut Detected",
+    "number_of_tickets": 31,
+    "description": "RoboNOC ticket for OXVZKLO; detected event: fiber cut detected"
+  },
+  {
+    "alarm": "Packet Loss High",
+    "number_of_tickets": 31,
+    "description": "RoboNOC ticket for OXVY9V8; detected event: packet loss high"
+  },
+  {
+    "alarm": "S1 Setup Failure",
+    "number_of_tickets": 30,
+    "description": "RoboNOC ticket for OXVZHWJ; detected event: s1 setup failure"
+  },
+  {
+    "alarm": "VSWR Alarm",
+    "number_of_tickets": 30,
+    "description": "RoboNOC ticket for OXVRHOC; detected event: vswr alarm"
+  },
+  {
+    "alarm": "St\u00f6rung - RBS - Huawei 4G",
+    "number_of_tickets": 29,
+    "description": "RoboNOC ticket for OXVRIXA; detected event: st\u00f6rung - rbs - huawei 4g"
+  },
+  {
+    "alarm": "Temperature Alarm",
+    "number_of_tickets": 27,
+    "description": "RoboNOC ticket for OXVRTJ5; detected event: temperature alarm"
+  },
+  {
+    "alarm": "St\u00f6rung - RBS - Nokia 3G",
+    "number_of_tickets": 26,
+    "description": "RoboNOC ticket for OXVZJA8; detected event: st\u00f6rung - rbs - nokia 3g"
+  },
+  {
+    "alarm": "BTS Out of Service",
+    "number_of_tickets": 26,
+    "description": "RoboNOC ticket for OXVWM31; detected event: bts out of service"
+  },
+  {
+    "alarm": "Latency Threshold Exceeded",
+    "number_of_tickets": 26,
+    "description": "RoboNOC ticket for OXVXLL4; detected event: latency threshold exceeded"
+  },
+  {
+    "alarm": "eNodeB RF Interference",
+    "number_of_tickets": 25,
+    "description": "RoboNOC ticket for OXVTVHH; detected event: enodeb rf interference"
+  },
+  {
+    "alarm": "Transport Congestion",
+    "number_of_tickets": 25,
+    "description": "RoboNOC ticket for OXVUHZ1; detected event: transport congestion"
+  },
+  {
+    "alarm": "X2 Link Failure",
+    "number_of_tickets": 24,
+    "description": "RoboNOC ticket for OXVZCYW; detected event: x2 link failure"
+  },
+  {
+    "alarm": "Cell Unavailable",
+    "number_of_tickets": 24,
+    "description": "RoboNOC ticket for OXVXA3K; detected event: cell unavailable"
+  },
+  {
+    "alarm": "Capacity Planning Review",
+    "number_of_tickets": 23,
+    "description": "Root cause investigation: capacity planning review - multiple occurrences on OXVYIHA"
+  },
+  {
+    "alarm": "Automated Recovery Triggered",
+    "number_of_tickets": 23,
+    "description": "RoboNOC ticket for OXVH2M5; detected event: automated recovery triggered"
+  },
+  {
+    "alarm": "Performance Degradation Detected",
+    "number_of_tickets": 23,
+    "description": "RoboNOC ticket for OXVUHZ1; detected event: performance degradation detected"
+  },
+  {
+    "alarm": "St\u00f6rung - RBS - Ericsson 5G",
+    "number_of_tickets": 23,
+    "description": "RoboNOC ticket for OXVXO9T; detected event: st\u00f6rung - rbs - ericsson 5g"
+  },
+  {
+    "alarm": "Threshold Breach Notification",
+    "number_of_tickets": 22,
+    "description": "RoboNOC ticket for OXVUZFK; detected event: threshold breach notification"
+  },
+  {
+    "alarm": "Link Down",
+    "number_of_tickets": 22,
+    "description": "RoboNOC ticket for OXVLY8O; detected event: link down"
+  },
+  {
+    "alarm": "NodeB Degraded",
+    "number_of_tickets": 22,
+    "description": "RoboNOC ticket for OXVZKLO; detected event: nodeb degraded"
+  },
+  {
+    "alarm": "High CPU Usage",
+    "number_of_tickets": 22,
+    "description": "RoboNOC ticket for OXVTEIY; detected event: high cpu usage"
+  },
+  {
+    "alarm": "Planned Maintenance Window",
+    "number_of_tickets": 21,
+    "description": "RoboNOC ticket for OXVX7EE; detected event: planned maintenance window"
+  },
+  {
+    "alarm": "Systematic Packet Loss Root Cause",
+    "number_of_tickets": 21,
+    "description": "Root cause investigation: systematic packet loss root cause - multiple occurrences on OXVNB4G"
+  },
+  {
+    "alarm": "Parameter Optimization",
+    "number_of_tickets": 21,
+    "description": "Scheduled maintenance: parameter optimization on element OXVOHP6"
+  },
+  {
+    "alarm": "Fiber Connectivity Setup",
+    "number_of_tickets": 21,
+    "description": "Scheduled maintenance: fiber connectivity setup on element OXVMVIH"
+  },
+  {
+    "alarm": "Cabinet Installation",
+    "number_of_tickets": 20,
+    "description": "Scheduled maintenance: cabinet installation on element OXVZBIK"
+  },
+  {
+    "alarm": "gNodeB Sync Loss",
+    "number_of_tickets": 19,
+    "description": "RoboNOC ticket for OXVY9V8; detected event: gnodeb sync loss"
+  },
+  {
+    "alarm": "Network Monitoring Alert",
+    "number_of_tickets": 19,
+    "description": "RoboNOC ticket for OXVZCOT; detected event: network monitoring alert"
+  },
+  {
+    "alarm": "Power Failure",
+    "number_of_tickets": 18,
+    "description": "RoboNOC ticket for OXVUJV6; detected event: power failure"
+  },
+  {
+    "alarm": "Frequency Re-farming",
+    "number_of_tickets": 18,
+    "description": "Scheduled maintenance: frequency re-farming on element OXVRJIW"
+  },
+  {
+    "alarm": "Repeated Power Failure Pattern",
+    "number_of_tickets": 17,
+    "description": "Root cause investigation: repeated power failure pattern - multiple occurrences on OXVZKLO"
+  },
+  {
+    "alarm": "Tower Installation",
+    "number_of_tickets": 16,
+    "description": "Scheduled maintenance: tower installation on element OXVUHZ1"
+  },
+  {
+    "alarm": "Recurring Link Down Analysis",
+    "number_of_tickets": 16,
+    "description": "Root cause investigation: recurring link down analysis - multiple occurrences on OXVTB94"
+  },
+  {
+    "alarm": "New Site Build - Urban",
+    "number_of_tickets": 15,
+    "description": "Scheduled maintenance: new site build - urban on element OXVCVS4"
+  },
+  {
+    "alarm": "Software Upgrade - Huawei RAN",
+    "number_of_tickets": 15,
+    "description": "Scheduled maintenance: software upgrade - huawei ran on element OXVXO9T"
+  },
+  {
+    "alarm": "Capacity Expansion - 5G",
+    "number_of_tickets": 15,
+    "description": "Scheduled maintenance: capacity expansion - 5g on element OXVZKLO"
+  },
+  {
+    "alarm": "Antenna Swap",
+    "number_of_tickets": 15,
+    "description": "Scheduled maintenance: antenna swap on element OXVPVS7"
+  },
+  {
+    "alarm": "Power System Installation",
+    "number_of_tickets": 15,
+    "description": "Scheduled maintenance: power system installation on element OXVXLL4"
+  },
+  {
+    "alarm": "Fiber Re-route",
+    "number_of_tickets": 14,
+    "description": "Scheduled maintenance: fiber re-route on element OXVZCYW"
+  },
+  {
+    "alarm": "Intermittent Cell Unavailability",
+    "number_of_tickets": 13,
+    "description": "Root cause investigation: intermittent cell unavailability - multiple occurrences on OXVSG65"
+  },
+  {
+    "alarm": "New Site Build - Rural",
+    "number_of_tickets": 13,
+    "description": "Scheduled maintenance: new site build - rural on element OXVG0FN"
+  },
+  {
+    "alarm": "Capacity Expansion - 4G",
+    "number_of_tickets": 13,
+    "description": "Scheduled maintenance: capacity expansion - 4g on element OXVUJV6"
+  },
+  {
+    "alarm": "Configuration Change - Transport",
+    "number_of_tickets": 12,
+    "description": "Scheduled maintenance: configuration change - transport on element OXVXLL4"
+  },
+  {
+    "alarm": "Software Upgrade - Ericsson RAN",
+    "number_of_tickets": 12,
+    "description": "Scheduled maintenance: software upgrade - ericsson ran on element OXVWJ0T"
+  },
+  {
+    "alarm": "Site Integration - New Build",
+    "number_of_tickets": 11,
+    "description": "Scheduled maintenance: site integration - new build on element OXVOH9S"
+  },
+  {
+    "alarm": "Power System Upgrade",
+    "number_of_tickets": 11,
+    "description": "Scheduled maintenance: power system upgrade on element OXVYIHA"
+  },
+  {
+    "alarm": "Chronic VSWR Investigation",
+    "number_of_tickets": 9,
+    "description": "Root cause investigation: chronic vswr investigation - multiple occurrences on OXVZCOT"
+  },
+  {
+    "alarm": "Hardware Replacement - BBU",
+    "number_of_tickets": 9,
+    "description": "Scheduled maintenance: hardware replacement - bbu on element OXVTRP0"
+  },
+  {
+    "alarm": "Configuration Change - Radio",
+    "number_of_tickets": 8,
+    "description": "Scheduled maintenance: configuration change - radio on element OXVPSEI"
+  },
+  {
+    "alarm": "Hardware Replacement - RRU",
+    "number_of_tickets": 7,
+    "description": "Scheduled maintenance: hardware replacement - rru on element OXVCIDK"
+  }
+]

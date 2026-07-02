@@ -1,0 +1,257 @@
+[
+  {
+    "subject": "Temperature Alarm",
+    "ticket_count": 20,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Backhaul Degradation",
+    "ticket_count": 19,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "S1 Setup Failure",
+    "ticket_count": 17,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Cell Unavailable",
+    "ticket_count": 16,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-TX-OPS"
+  },
+  {
+    "subject": "Packet Loss High",
+    "ticket_count": 16,
+    "regions": "G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Fiber Cut Detected",
+    "ticket_count": 15,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "St\u00f6rung - RBS - Ericsson 5G",
+    "ticket_count": 15,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "St\u00f6rung - RBS - Huawei 4G",
+    "ticket_count": 15,
+    "regions": "G-CORE-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Power Failure",
+    "ticket_count": 14,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Capacity Planning Review",
+    "ticket_count": 14,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Performance Degradation Detected",
+    "ticket_count": 14,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Latency Threshold Exceeded",
+    "ticket_count": 14,
+    "regions": "G-CORE-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "St\u00f6rung - RBS - Nokia 3G",
+    "ticket_count": 14,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO"
+  },
+  {
+    "subject": "Transport Congestion",
+    "ticket_count": 14,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "eNodeB RF Interference",
+    "ticket_count": 12,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "gNodeB Sync Loss",
+    "ticket_count": 12,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "BTS Out of Service",
+    "ticket_count": 12,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Link Down",
+    "ticket_count": 12,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "X2 Link Failure",
+    "ticket_count": 12,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Cabinet Installation",
+    "ticket_count": 11,
+    "regions": "G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Parameter Optimization",
+    "ticket_count": 11,
+    "regions": "G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "New Site Build - Rural",
+    "ticket_count": 11,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Repeated Power Failure Pattern",
+    "ticket_count": 11,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Planned Maintenance Window",
+    "ticket_count": 10,
+    "regions": "G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "High CPU Usage",
+    "ticket_count": 10,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Fiber Connectivity Setup",
+    "ticket_count": 10,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Network Monitoring Alert",
+    "ticket_count": 10,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Tower Installation",
+    "ticket_count": 10,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO"
+  },
+  {
+    "subject": "NodeB Degraded",
+    "ticket_count": 10,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "New Site Build - Urban",
+    "ticket_count": 9,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Automated Recovery Triggered",
+    "ticket_count": 9,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Software Upgrade - Huawei RAN",
+    "ticket_count": 9,
+    "regions": "G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-TX-OPS"
+  },
+  {
+    "subject": "VSWR Alarm",
+    "ticket_count": 9,
+    "regions": "G-CORE-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Systematic Packet Loss Root Cause",
+    "ticket_count": 8,
+    "regions": "G-CORE-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Antenna Swap",
+    "ticket_count": 8,
+    "regions": "G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-TX-OPS"
+  },
+  {
+    "subject": "Threshold Breach Notification",
+    "ticket_count": 8,
+    "regions": "G-CORE-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-TX-OPS"
+  },
+  {
+    "subject": "Capacity Expansion - 5G",
+    "ticket_count": 8,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-TX-OPS"
+  },
+  {
+    "subject": "Fiber Re-route",
+    "ticket_count": 8,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Frequency Re-farming",
+    "ticket_count": 8,
+    "regions": "G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Power System Installation",
+    "ticket_count": 7,
+    "regions": "G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Power System Upgrade",
+    "ticket_count": 7,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-TX-OPS"
+  },
+  {
+    "subject": "Intermittent Cell Unavailability",
+    "ticket_count": 7,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Configuration Change - Transport",
+    "ticket_count": 7,
+    "regions": "G-CORE-OPS, G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Recurring Link Down Analysis",
+    "ticket_count": 6,
+    "regions": "G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-TX-OPS"
+  },
+  {
+    "subject": "Site Integration - New Build",
+    "ticket_count": 6,
+    "regions": "G-CORE-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-SO"
+  },
+  {
+    "subject": "Configuration Change - Radio",
+    "ticket_count": 5,
+    "regions": "G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Chronic VSWR Investigation",
+    "ticket_count": 5,
+    "regions": "G-IP-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Capacity Expansion - 4G",
+    "ticket_count": 5,
+    "regions": "G-CORE-OPS, G-RAN-BO-VFRO-ZV, G-TX-OPS"
+  },
+  {
+    "subject": "Hardware Replacement - BBU",
+    "ticket_count": 5,
+    "regions": "G-CORE-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-NW, G-RAN-FO-VFRO-SO"
+  },
+  {
+    "subject": "Hardware Replacement - RRU",
+    "ticket_count": 4,
+    "regions": "G-CORE-OPS, G-RAN-BO-VFRO-ZV, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  },
+  {
+    "subject": "Software Upgrade - Ericsson RAN",
+    "ticket_count": 3,
+    "regions": "G-IP-OPS, G-RAN-FO-VFRO-SO, G-RAN-FO-VFRO-ZV"
+  }
+]
