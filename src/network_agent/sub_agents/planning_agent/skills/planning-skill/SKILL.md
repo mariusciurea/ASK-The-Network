@@ -1,129 +1,136 @@
 ---
 name: planning-skill
-description: Generates free loopback IP addresses from a subnet using MySQL lookup and deterministic IP computation.
+description: Generates free loopback IP addresses from a subnet using mandatory MySQL lookup and deterministic IP computation.
 ---
 
-## Overview
+# Overview
 
-The planning-skill allocates free loopback IP addresses from a given subnet.
+This skill allocates free loopback IP addresses from a given subnet.
 
-It performs the following steps:
-1. Retrieves already used loopback IPs from a MySQL database
-2. Computes available IP addresses inside the subnet
-3. Returns the requested number of free IPs
+It is fully automated and MUST use tools for all data retrieval.
 
-Use this skill whenever the user requests free loopback IP addresses.
+The model MUST NOT ask the user for database information under any circumstance.
 
 ---
 
-## Input validation rules
+# Core Rules (CRITICAL)
 
-- `subnet` MUST be in CIDR format (example: 18.197.124.0/24)
-- If subnet is NOT in CIDR format:
-  - do NOT proceed
-  - ask user to provide a valid CIDR subnet
-- Do NOT attempt to infer or fix invalid subnets
+- You MUST use tools to retrieve all used loopback IPs.
+- You MUST NOT ask the user for IP addresses.
+- You MUST NOT assume, infer, or hallucinate any IP data.
+- You MUST execute tools in the correct order.
+- If a tool is required, it MUST be called before proceeding.
 
 ---
 
-## Tools
+# Input validation rules
 
-### send_sql_command(sql_query: str)
-Executes a SQL query and returns a list of used loopback IP addresses from the database.
+- `subnet` MUST be a valid CIDR (example: 18.197.124.0/24)
+- If subnet is invalid:
+  - STOP
+  - ask user for a valid CIDR
+- Do NOT attempt to fix or guess invalid subnets
 
-### calculate_free_ips(
-    number_of_addresses: int,
-    subnet: str,
-    used_loopback_ips: list[str]
+---
+
+# Tools
+
+## send_sql_command(sql_query: str)
+
+MANDATORY TOOL.
+
+Executes a MySQL query and returns all used loopback IPs.
+
+If results exceed limits, it stores the full dataset in an artifact.
+
+YOU MUST call this tool before calculating IP availability.
+
+Never ask the user for database values.
+
+---
+
+## calculate_free_ips(
+    number_of_addresses,
+    subnet,
+    used_loopback_ips
 )
-Computes available IP addresses in the given subnet and returns the requested number of free IPs.
+
+Computes free IP addresses in the given subnet.
+
+- Automatically uses artifact data if available
+- Otherwise uses `used_loopback_ips` from `send_sql_command`
+
+DO NOT manually compute IP availability outside this tool.
 
 ---
 
-## Database Schema
+# Database Schema
 
-Primary table: `dev_radio_data`
+Table: `dev_radio_data`
 
-Relevant column:
-- `loop_ip` (TEXT): loopback IP address
-
----
-
-## Execution Flow
-
-### 1. Extract input
-From the user request, extract:
-- `subnet` (CIDR format, e.g. 158.98.202.0/24)
-- `number_of_addresses`
-
-If either value is missing, ask the user.
+Column:
+- `loop_ip` (TEXT)
 
 ---
 
-### 2. Compute subnet range
+# Execution Flow (STRICT ORDER)
 
-Convert the CIDR subnet into:
-- `start_ip` → first IP address in the subnet
-- `end_ip` → last IP address in the subnet
+## 1. Extract inputs
 
-Example:
-- subnet: 158.98.202.0/24
-- start_ip: 158.98.202.0
-- end_ip: 158.98.202.255
+From the user request extract:
+
+- subnet
+- number_of_addresses
+
+If missing → ask user.
 
 ---
 
-### 3. Build SQL query (MySQL-compatible)
+## 2. Retrieve used IPs (MANDATORY STEP)
 
-Use the following query:
+You MUST generate and execute this SQL query:
 
 ```sql
 SELECT loop_ip
 FROM dev_radio_data
-WHERE loop_ip IS NOT NULL
-AND INET_ATON(loop_ip)
-BETWEEN INET_ATON('<start_ip>')
-AND INET_ATON('<end_ip>');
+WHERE loop_ip IS NOT NULL;
 ```
-Replace:
 
-<start_ip> with computed start IP
-<end_ip> with computed end IP
+Then call:
 
-Ensure SQL is valid and safe before execution.
+send_sql_command(sql_query)
 
----
-
-### 4. Call `send_sql_command(sql_query)`. The tool returns the list of allocated loopback IP addresses in the subnet.
+DO NOT skip this step.
+DO NOT ask user for IP data.
 
 ---
 
-### 5. Calculate free addresses
+## 3. Compute free IPs
 
 Call:
 
 calculate_free_ips(
     number_of_addresses=number_of_addresses,
     subnet=subnet,
-    used_loopback_ips=used_loopback_ips
+    used_loopback_ips=result_from_sql
 )
-
-where:
-
-subnet is the requested subnet
-used_loopback_ips is the result returned by send_sql_command, passed as a list 
-number_of_addresses is the number of requested addresses
-
-Do not attempt to calculate free IP addresses yourself.
 
 ---
 
-### 6. Return the result
+## 4. Return result
 
-Return the free loopback IP addresses produced by calculate_free_ips.
+Return the list of free IPs.
 
-If fewer addresses are available than requested, clearly state how many addresses are available and return those addresses.
+If fewer IPs are available than requested:
+- return all available IPs
+- explicitly mention the shortage
 
+---
 
+# Important Behavior Constraints
 
-
+- Never ask the user for IPs
+- Never assume DB contents
+- Always call send_sql_command first
+- Always use tool outputs or artifacts
+- Never compute availability manually in the model

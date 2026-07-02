@@ -34,6 +34,10 @@ async def _save_artifact(sql_query_response: list[dict[str, Any]], tool_context:
         data=bytes_query_response,
         mime_type=mime_type
     )
+    logger.info(
+        "Saving artifact with %d rows",
+        len(sql_query_response),
+    )
     await tool_context.save_artifact(artifact_filename, artifact_content)
 
 

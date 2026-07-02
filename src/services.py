@@ -17,4 +17,4 @@ app = get_fast_api_app(
 )
 
 
-# uvicorn src.services:app --host 0.0.0.0 --port 3459 --reload
+# uvicorn src.services:app --host 0.0.0.0 --port 3453 --reload

@@ -7,6 +7,7 @@ from google.adk.tools import agent_tool
 
 from src.network_agent.sub_agents.radio_agent.agent import radio_agent
 from src.network_agent.sub_agents.planning_agent.agent import planning_agent
+from src.network_agent.sub_agents.ticketing_agent.agent import ticketing_agent
 
 from src.core.settings import settings
 from src.network_agent.prompt import ROOT_INSTRUCTIONS
@@ -28,6 +29,7 @@ root_agent = LlmAgent(
         root_skill_toolset,
         agent_tool.AgentTool(radio_agent),
         agent_tool.AgentTool(planning_agent),
+        agent_tool.AgentTool(ticketing_agent),
 
     ],
     # sub_agents=[radio_agent], #
