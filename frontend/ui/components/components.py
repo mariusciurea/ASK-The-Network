@@ -442,6 +442,13 @@ class ChatComponent(BaseComponent):
         if inline_data:
             mime_type = inline_data.get("mimeType") or inline_data.get("mime_type") or ""
             raw_data = base64.b64decode(inline_data.get("data", ""))
+
+            # Binary formats - return raw bytes without text decoding
+            binary_types = ("image/", "application/vnd.", "application/octet-stream",
+                           "application/pdf", "application/zip")
+            if any(mime_type.startswith(bt) for bt in binary_types):
+                return raw_data, raw_data, mime_type
+
             text_data = raw_data.decode("utf-8")
 
             if "json" in mime_type:
@@ -461,8 +468,18 @@ class ChatComponent(BaseComponent):
         return artifact, raw_data, "application/json"
 
     @staticmethod
-    def _render_artifact_payload(payload: Any):
+    def _render_artifact_payload(payload: Any, mime_type: str = ""):
         """Render artifact content in the most useful available format."""
+        # Handle binary image data
+        if isinstance(payload, bytes) and mime_type.startswith("image/"):
+            st.image(payload, use_container_width=True)
+            return
+
+        # Handle binary Excel/other files - just show info (download button is separate)
+        if isinstance(payload, bytes):
+            st.info(f"Binary artifact ({len(payload)} bytes, type: {mime_type}). Use the download button above.")
+            return
+
         if isinstance(payload, list):
             st.caption(f"{len(payload)} rows")
             if all(isinstance(item, dict) for item in payload):
@@ -597,7 +614,9 @@ class ChatComponent(BaseComponent):
                     mime=loaded_artifact["mime_type"] or "application/octet-stream",
                     key=f"download_artifact_{session_id}_{artifact_name}_{selected_version}",
                 )
-                ChatComponent._render_artifact_payload(loaded_artifact["payload"])
+                ChatComponent._render_artifact_payload(
+                    loaded_artifact["payload"], loaded_artifact["mime_type"]
+                )
 
     def _render_chat_input(self):
         """Render the chat input field"""
