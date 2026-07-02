@@ -17,8 +17,8 @@ class Settings(BaseSettings):
     DB_URL:str ="mysql+pymysql://root:ewis2020@localhost:3306/radio_network_data"
 
     # model
-    # MODEL_NAME: str = "gemini-3-flash-preview"
-    MODEL_NAME: str = "gemini-3.1-flash-lite"
+    MODEL_NAME: str = "gemini-3-flash-preview"
+    # MODEL_NAME: str = "gemini-3.1-flash-lite"
     GOOGLE_API_KEY: str = ""
 
     # MCP
