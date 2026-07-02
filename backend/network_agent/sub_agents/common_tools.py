@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from google.genai.types import Part
 from google.adk.tools import ToolContext
 
-from backend.data_models.models import SQLCommandResult
+from backend.data_models.models import SQLCommandResult, SQLCommandInput
 from backend.database.db import engine
 
 from backend.core.settings import settings
@@ -48,15 +48,15 @@ async def send_sql_command(sql_query: str, tool_context: ToolContext):
           SQLCommandResult with either returned rows or error details.
     """
 
-
+    sql_query_model = SQLCommandInput(sql_query=sql_query)
 
     if not sql_query:
         return SQLCommandResult.failure("sql_query parameter should not be empty")
 
     try:
         with engine.connect() as connection:
-            sql_command_logger.info(f"Sending SQL command: {sql_query}")
-            result = connection.execute(text(sql_query))
+            sql_command_logger.info(f"Sending SQL command: {sql_query_model.sql_query}")
+            result = connection.execute(text(sql_query_model.sql_query))
 
             if result.returns_rows:
                 rows = [dict(row) for row in result.mappings().all()]

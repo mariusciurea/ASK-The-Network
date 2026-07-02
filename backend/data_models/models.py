@@ -1,7 +1,22 @@
 """Pydantic models"""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, HttpUrl
 from typing import Literal, List, Any
+
+
+BLACKLIST_SQL_COMMANDS = ["DROP", "DELETE", "TRUNCATE"]
+
+class SQLCommandInput(BaseModel):
+    """Validator for SQL queries"""
+
+    sql_query: str
+
+    @field_validator("sql_query")
+    @classmethod
+    def validate_query(cls, value: str):
+        if value.split()[0] in BLACKLIST_SQL_COMMANDS:
+            raise ValueError("Query is not permitted")
+        return value
 
 
 class SQLCommandResult(BaseModel):
