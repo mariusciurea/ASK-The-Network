@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mysql:8
+    container_name: ask-network-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: Changeme_123
+      MYSQL_DATABASE: radio_network_data
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  agentic_app:
+    build: ..
+    container_name: ask-network-app
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      DB_URL: mysql+pymysql://root:Changeme_123@db:3306/radio_network_data
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+    ports:
+      - "3333:3333"
+    command: sh -c "python scripts/initialize_db.py && uvicorn src.services:app --host 0.0.0.0 --port 3333"
+
+volumes:
+  mysql_data:
