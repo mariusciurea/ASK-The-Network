@@ -28,19 +28,34 @@ The skill determines which sub-agent to use based on:
 ---
 
 ## Sub-agents
-- **RadioNetworkAgent**: Converts natural language requests into SQL queries for database interactions.
-- **PlanningNetworkAgent**:If the user asks for free loopback IP addresses, always delegate the request to planning_agent.
+- **RadioNetworkAgent**: Converts natural language requests related to radio network elements into SQL queries for database interactions.
+- **PlanningNetworkAgent**: If the user asks for free loopback IP addresses, always delegate the request to planning_agent.
+- **TicketingMasterAgent**: Converts natural language requests related to tickets into SQL queries for database interactions
 
 
 ## Examples
+
+### Example 1
 **User**
 - What is the 2G IP of network element Test?
 
 **RootNetworkAgent**
 - Based on the user prompt I need to delegate this task to RadioNetworkAgent (because Test is a radio network element and 2G IP is stored in the database)
 
+### Example 2
 **User**
 - Give me 2 free loopback IP addresses in the subnet 10.0.0.0/24.
 
 **RootNetworkAgent**
 - Based on the user prompt I need to delegate this task to PlanningNetworkAgent (because it is responsible for generation free loopback IP addresses)
+
+### Example 3
+**User**
+- Show me the most comon resolution for the transport issue problems
+
+**RootNetworkAgent** 
+I need to delegate this task to **TicketingMasterAgent** as it is the one taking care of tickets data
+
+**TicketingMasterAgent**
+- Based on the user prompt I will make this SQL query: SELECT ..... and send call the send_to_sql() function to get tickets
+information from the database
