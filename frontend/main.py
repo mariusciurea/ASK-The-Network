@@ -1,6 +1,9 @@
+"""Entrypoint"""
+
 import streamlit as st
+
 from frontend.ui.components.layout import Layout
-from settings import settings
+from frontend.settings import settings
 from frontend.ui.components.components import (
     AuthComponent,
     SidebarComponent,

@@ -5,7 +5,7 @@ import csv
 from sqlalchemy.orm import sessionmaker
 from backend.database.db import engine
 
-from backend.database.db_models import Base, NetworkDevice
+from backend.database.db_models import Base, NetworkDevice, TicketData
 from backend.core.settings import settings
 
 SessionLocal = sessionmaker(bind=engine)
@@ -21,7 +21,7 @@ def init_db() -> None:
             data_path = settings.DATA_DIR / "MOCK_DATA.csv"
             with open(data_path, "r") as csv_file:
                 reader = csv.DictReader(csv_file)
-                for row in reader:
+                for row in reader:  # NetworkDevice(**row)
                     session.add(NetworkDevice(
                         ne_name=row.get("ne_name"),
                         lte_ip=row.get("lte_ip"),
@@ -31,6 +31,29 @@ def init_db() -> None:
                         ike_peer=row.get("ike_peer"),
                         enodeb_id=int(row.get("enodeb_id")),
                         gnodeb_id=int(row.get("gnodeb_id")),
+                    ))
+            session.commit()
+
+        if session.query(TicketData).count() == 0:
+            tickets_path = settings.DATA_DIR / "network_tickets_diverse_resolution.csv"
+            with tickets_path.open("r", encoding="utf-8-sig") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    session.add(TicketData(
+                        ticket_number=row.get("Ticket Number"),
+                        status=row.get("Status"),
+                        creator_area=row.get("Creator Area"),
+                        use_case=row.get("Use Case"),
+                        subject=row.get("Subject"),
+                        priority=int(row["Priority"]) if row.get("Priority") else None,
+                        description=row.get("Description"),
+                        start=row.get("Start"),
+                        sla_ticket=row.get("SLA Ticket"),
+                        network_element_identifier=row.get("Network Element Identifier"),
+                        loc_identifier=row.get("Loc Identifier"),
+                        assignee_area=row.get("Assignee Area"),
+                        response_subject=row.get("Response Subject"),
+                        response_description=row.get("Response Description"),
                     ))
             session.commit()
     finally:

@@ -1,6 +1,6 @@
 """DB Models"""
 
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text
 from sqlalchemy.sql import func
 
 from backend.database.db import Base
@@ -18,6 +18,27 @@ class NetworkDevice(Base):
     ike_peer = Column(String(100), nullable=True)
     enodeb_id = Column(Integer, nullable=True)
     gnodeb_id = Column(Integer, nullable=True)
+
+
+class TicketData(Base):
+    __tablename__ = "ticket_data"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    ticket_number = Column(String(100), unique=True, nullable=False, index=True)
+    status = Column(String(50), nullable=False)
+    creator_area = Column(String(100), nullable=False)
+    use_case = Column(String(100), nullable=True)
+    subject = Column(String(255), nullable=True)
+    priority = Column(Integer, nullable=True)
+    description = Column(Text, nullable=True)
+    start = Column(String(50), nullable=True)
+    sla_ticket = Column(String(50), nullable=True)
+    network_element_identifier = Column(String(100), nullable=True)
+    loc_identifier = Column(String(100), nullable=True)
+    assignee_area = Column(String(100), nullable=True)
+    response_subject = Column(String(255), nullable=True)
+    response_description = Column(Text, nullable=True)
+
 
 
 class User(Base):

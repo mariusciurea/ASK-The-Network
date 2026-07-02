@@ -8,11 +8,9 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN sed '/^pywin32==/d' requirements.txt > /tmp/requirements-linux.txt \
-    && (grep -qi '^streamlit' /tmp/requirements-linux.txt || echo 'streamlit' >> /tmp/requirements-linux.txt) \
-    && pip install --no-cache-dir -r /tmp/requirements-linux.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY frontend ./frontend
+COPY . ./frontend
 
 EXPOSE 8501
 
