@@ -62,7 +62,7 @@ Railway injects `PORT`; both images bind `0.0.0.0:$PORT`.
 | Variable | Value | Why |
 |---|---|---|
 | `DB_URL` | `mysql+pymysql://root:${{MySQL.MYSQL_ROOT_PASSWORD}}@${{MySQL.RAILWAY_PRIVATE_DOMAIN}}:3306/railway` | Ticket database |
-| `SESSION_SERVICE_URI` | same as `DB_URL` | Otherwise conversations live in a SQLite file that is wiped on every deploy |
+| `SESSION_SERVICE_URI` | leave unset (SQLite) | See the note below before pointing it at MySQL |
 | `GOOGLE_API_KEY` | your key | The agent cannot answer without it |
 | `JWT_SECRET_KEY` | 32+ random characters | Anyone who can read this repo could otherwise forge a token |
 | `LIBRARY_LOG_LEVEL` | `WARNING` | `google_adk` and `httpx` log one line per internal step; Railway drops messages above 500/sec and the useful lines go with them |
@@ -86,6 +86,24 @@ python -c "import secrets; print(secrets.token_urlsafe(48), end='')" \
 `ENVIRONMENT=production` makes the app refuse to start with the default JWT
 secret, a secret under 32 characters, or the local database URL. An enabled dev
 UI is only a warning, so manual testing keeps working.
+
+### Sessions stay in SQLite for now
+
+ADK builds the session store with `create_async_engine`, so
+`SESSION_SERVICE_URI` needs an **async** driver. Setting it to the `DB_URL`
+value crashes the app at startup:
+
+```
+sqlalchemy.exc.InvalidRequestError: The asyncio extension requires an async
+driver to be used. The loaded 'pymysql' is not async.
+```
+
+Moving sessions to MySQL therefore means adding `aiomysql` to
+`backend/requirements.txt` and using `mysql+aiomysql://...` - the same host,
+database and credentials, only the driver differs. Until then the variable
+stays unset and conversations live in `/app/sessions.db`, which is wiped on
+every deploy. Note that ADK prints the whole URL, password included, when the
+engine cannot be created.
 
 ### frontend
 
