@@ -8,10 +8,14 @@ API key.
     python backend/tests/test_ticketing_master.py      # same checks, no pytest
 """
 
+import json
+from datetime import date, datetime, timedelta
+from decimal import Decimal
+
 import sqlglot
 
 from backend.core.sql_safety import UnsafeSQLError, parse_read_only
-from backend.data_models.models import SQLCommandInput
+from backend.data_models.models import SQLCommandInput, SQLCommandResult
 from backend.network_agent.sub_agents.ticketing_master.data_tools import build_metric_query
 from backend.network_agent.sub_agents.ticketing_master.semantic_layer import load_semantic_layer
 from backend.network_agent.sub_agents.ticketing_master.sql_guard import guard_sql
@@ -122,6 +126,35 @@ def test_write_and_stacked_statements_are_rejected():
         except UnsafeSQLError:
             continue
         raise AssertionError(f"query should have been rejected: {sql_query!r}")
+
+
+def test_database_types_survive_json_serialisation():
+    """A tool result becomes JSON in the next model request.
+
+    MySQL returns Decimal for SUM/AVG and datetime for STR_TO_DATE, and both
+    killed the whole agent turn with
+    "TypeError: Object of type Decimal is not JSON serializable".
+    """
+
+    rows = [{
+        "ticket_count": 43,
+        "resolved_count": Decimal("31"),
+        "avg_priority": Decimal("3.4500"),
+        "first_occurrence": datetime(2026, 1, 4, 16, 27),
+        "sla_day": date(2026, 3, 1),
+        "open_for": timedelta(hours=52),
+        "note": b"raw bytes",
+    }]
+
+    result = SQLCommandResult.success(rows=rows)
+    payload = json.loads(json.dumps(result.model_dump()))
+    row = payload["rows"][0]
+
+    assert row["resolved_count"] == 31, "counts must stay integers, not 31.0"
+    assert isinstance(row["avg_priority"], float)
+    assert row["first_occurrence"].startswith("2026-01-04")
+    assert row["sla_day"] == "2026-03-01"
+    assert isinstance(row["note"], str)
 
 
 def test_tool_input_validation_rejects_writes():

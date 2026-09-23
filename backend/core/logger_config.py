@@ -7,6 +7,20 @@ from pathlib import Path
 from backend.core.settings import settings
 
 
+# One line per HTTP call, per model request and per internal step adds up fast.
+NOISY_LIBRARIES = (
+    "google_adk",
+    "google.adk",
+    "google_genai",
+    "httpx",
+    "httpcore",
+    "urllib3",
+    "matplotlib",
+    "opentelemetry",
+    "sqlalchemy.engine",
+)
+
+
 def _make_formatter() -> logging.Formatter:
     return logging.Formatter(
         "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
@@ -39,6 +53,18 @@ def _make_console_handler(level: int = logging.INFO) -> logging.StreamHandler:
     return handler
 
 
+def _quiet_noisy_libraries(level: int) -> None:
+    """Raise the level of libraries that log one line per internal step.
+
+    In production these produced hundreds of lines per agent turn and Railway
+    started dropping messages ("rate limit of 500 logs/sec reached"), which
+    takes the useful lines down with them.
+    """
+
+    for name in NOISY_LIBRARIES:
+        logging.getLogger(name).setLevel(level)
+
+
 def setup_logging() -> None:
     """Setup logging"""
 
@@ -52,6 +78,10 @@ def setup_logging() -> None:
 
     root_logger.addHandler(_make_console_handler())
     root_logger.addHandler(_make_file_handler(log_dir / "app.log"))
+
+    _quiet_noisy_libraries(logging.getLevelNamesMapping().get(
+        settings.LIBRARY_LOG_LEVEL.strip().upper(), logging.INFO
+    ))
 
     # SQL command logger
     sql_command_logger = logging.getLogger("audit.sql.commands")

@@ -22,15 +22,24 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+# Created early so the chown below can use it.
+RUN useradd --create-home --uid 10001 appuser
+
 # Dependencies first: this layer stays cached until requirements.txt changes.
 COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# The ADK dev UI writes runtime-config.json into its own package directory on
+# startup. As a non-root user that fails with "Permission denied" and the dev
+# UI does not get its backend URL, so this one directory is handed to appuser.
+RUN ADK_CONFIG="$(python -c 'import google.adk.cli, pathlib; print(pathlib.Path(google.adk.cli.__file__).parent / "browser" / "assets" / "config")')" \
+    && mkdir -p "$ADK_CONFIG" \
+    && chown -R appuser:appuser "$ADK_CONFIG"
+
 # The package must land at /app/backend so `backend.services` is importable.
 COPY . ./backend
 
-# Run as an unprivileged user.
-RUN useradd --create-home --uid 10001 appuser && chown -R appuser:appuser /app
+RUN chown -R appuser:appuser /app
 USER appuser
 
 EXPOSE 8082

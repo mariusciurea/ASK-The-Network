@@ -1,5 +1,6 @@
 """Settings"""
 
+from logging import getLogger
 from pathlib import Path
 from pydantic_settings import BaseSettings
 
@@ -51,6 +52,9 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: str = "*"
     # The ADK dev UI has no authentication of its own.
     ENABLE_DEV_UI: bool = True
+    # Level for chatty third-party loggers (google_adk, httpx, ...). Set it to
+    # WARNING in production: one line per internal step made Railway drop logs.
+    LIBRARY_LOG_LEVEL: str = "INFO"
 
     @property
     def is_production(self) -> bool:
@@ -84,7 +88,11 @@ class Settings(BaseSettings):
         if self.DB_URL == DEFAULT_DB_URL:
             problems.append("DB_URL still points at the local development database")
         if self.ENABLE_DEV_UI:
-            problems.append("ENABLE_DEV_UI exposes the unauthenticated ADK dev UI")
+            # Deliberate while the agent endpoints are used for manual testing,
+            # so it is a warning and not a reason to refuse to start.
+            getLogger(__name__).warning(
+                "ENABLE_DEV_UI is on: the ADK dev UI is reachable without authentication."
+            )
 
         if problems:
             raise RuntimeError(

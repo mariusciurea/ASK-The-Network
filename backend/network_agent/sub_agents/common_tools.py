@@ -13,6 +13,7 @@ from google.adk.tools import ToolContext
 from backend.data_models.models import SQLCommandResult, SQLCommandInput
 from backend.database.db import engine
 
+from backend.core.serialization import json_safe_rows
 from backend.core.settings import settings
 
 from typing import Any
@@ -23,6 +24,17 @@ sql_command_logger = getLogger("audit.sql.commands")
 sql_result_logger = getLogger("audit.sql.results")
 
 SQL_OUTPUT_ARTIFACT = "sql_command_output.json"
+
+# A full result set in the log is expensive and rarely readable; a count plus a
+# short preview is what you actually look for when debugging a query.
+LOG_PREVIEW_CHARS = 500
+
+
+def log_result_rows(label: str, rows: list[dict[str, Any]]) -> None:
+    """Log how many rows a query returned, with a short preview."""
+
+    preview = json.dumps(rows[:3], default=str)[:LOG_PREVIEW_CHARS]
+    sql_result_logger.info("%s | %s rows | first rows: %s", label, len(rows), preview)
 
 
 async def save_rows_artifact(
@@ -85,11 +97,11 @@ async def send_sql_command(sql_query: str, tool_context: ToolContext) -> SQLComm
             if not result.returns_rows:
                 return SQLCommandResult.success(rows=[], sql_query=sql_query_model.sql_query)
 
-            rows = [dict(row) for row in result.mappings().all()]
+            rows = json_safe_rows([dict(row) for row in result.mappings().all()])
 
             if len(rows) > settings.MAX_ROWS:
                 artifact = await save_rows_artifact(rows, tool_context)
-                sql_result_logger.info(f"rows: {rows[0:settings.MAX_ROWS]}")
+                log_result_rows("send_sql_command (truncated)", rows)
                 return SQLCommandResult.success(
                     rows=rows[0:settings.MAX_ROWS],
                     row_count=len(rows),
@@ -98,7 +110,7 @@ async def send_sql_command(sql_query: str, tool_context: ToolContext) -> SQLComm
                     sql_query=sql_query_model.sql_query,
                 )
 
-            sql_result_logger.info(f"rows: {rows}")
+            log_result_rows("send_sql_command", rows)
             return SQLCommandResult.success(rows=rows, sql_query=sql_query_model.sql_query)
     except SQLAlchemyError as e:
         logger.error(str(e))

@@ -21,10 +21,11 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from google.adk.tools import ToolContext
 
+from backend.core.serialization import json_safe_rows
 from backend.core.settings import settings
 from backend.data_models.models import SQLCommandResult
 from backend.database.db import engine
-from backend.network_agent.sub_agents.common_tools import save_rows_artifact
+from backend.network_agent.sub_agents.common_tools import log_result_rows, save_rows_artifact
 from backend.network_agent.sub_agents.ticketing_master.semantic_layer import (
     MetricSpec,
     SemanticLayer,
@@ -141,17 +142,17 @@ async def get_ticket(ticket_number: str, tool_context: ToolContext) -> SQLComman
     try:
         with engine.connect() as connection:
             sql_command_logger.info(f"get_ticket: {ticket_number}")
-            rows = [
+            rows = json_safe_rows([
                 dict(row)
                 for row in connection.execute(
                     text(query), {"ticket_number": ticket_number.strip()}
                 ).mappings().all()
-            ]
+            ])
     except SQLAlchemyError as error:
         logger.error(str(error))
         return SQLCommandResult.failure(str(error), sql_query=query)
 
-    sql_result_logger.info(f"get_ticket rows: {rows}")
+    log_result_rows(f"get_ticket {ticket_number}", rows)
     return SQLCommandResult.success(rows=rows, sql_query=query)
 
 
@@ -325,12 +326,14 @@ async def run_metric(
     try:
         with engine.connect() as connection:
             sql_command_logger.info(f"run_metric '{metric_name}' filters={applied}: {query}")
-            rows = [dict(row) for row in connection.execute(text(query), params).mappings().all()]
+            rows = json_safe_rows(
+                [dict(row) for row in connection.execute(text(query), params).mappings().all()]
+            )
     except SQLAlchemyError as error:
         logger.error(str(error))
         return SQLCommandResult.failure(str(error), sql_query=query)
 
-    sql_result_logger.info(f"run_metric '{metric_name}' rows: {rows[:settings.MAX_ROWS]}")
+    log_result_rows(f"run_metric {metric_name}", rows)
 
     if len(rows) > settings.MAX_ROWS:
         artifact = await save_rows_artifact(rows, tool_context, f"{metric_name}.json")

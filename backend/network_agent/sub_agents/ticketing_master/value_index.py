@@ -18,6 +18,7 @@ from typing import Any
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
+from backend.core.serialization import json_safe_rows
 from backend.core.settings import settings
 from backend.database.db import engine
 from backend.network_agent.sub_agents.ticketing_master.semantic_layer import (
@@ -85,7 +86,7 @@ def distinct_values(column: str, layer: SemanticLayer | None = None) -> list[dic
 
     try:
         with engine.connect() as connection:
-            rows = [dict(row) for row in connection.execute(query).mappings().all()]
+            rows = json_safe_rows([dict(row) for row in connection.execute(query).mappings().all()])
     except SQLAlchemyError as error:
         _failed_lookups[column] = (time.monotonic() + FAILURE_COOLDOWN_SECONDS, error)
         raise

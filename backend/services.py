@@ -2,7 +2,9 @@
 
 from google.adk.cli.fast_api import get_fast_api_app
 
-from backend.core.auth_middleware import AuthMiddleware
+# Kept imported although the middleware is not enabled below, so turning the
+# protection back on is a one-line change.
+from backend.core.auth_middleware import AuthMiddleware  # noqa: F401
 from backend.core.logger_config import setup_logging
 from backend.core.settings import settings
 from backend.database.db import Base, engine
@@ -25,9 +27,18 @@ app = get_fast_api_app(
 )
 app.include_router(auth_router)
 
-# Added last, so it wraps everything: no ADK endpoint is reachable without a
-# valid token, and nobody can act as another user.
-app.add_middleware(AuthMiddleware)
+# Authentication on the agent endpoints is currently DISABLED on purpose: the
+# ADK dev UI has no login screen, and it is used for manual testing.
+#
+# Uncomment the line below to require a valid token on everything except
+# /auth/* and /health, and to stop one user from reading another user's
+# sessions. The middleware and its tests stay in the repository either way -
+# see backend/core/auth_middleware.py and backend/tests/test_auth_middleware.py.
+#
+# While it is commented out, treat the backend URL as public: anyone who knows
+# it can run the agent and read every session.
+#
+# app.add_middleware(AuthMiddleware)
 
 
 @app.get("/health", tags=["ops"])

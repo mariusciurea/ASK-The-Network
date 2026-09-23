@@ -3,6 +3,7 @@
 from pydantic import BaseModel, Field, field_validator, HttpUrl
 from typing import Literal, List, Any
 
+from backend.core.serialization import json_safe_rows
 from backend.core.sql_safety import parse_read_only
 
 
@@ -29,6 +30,18 @@ class SQLCommandResult(BaseModel):
     status: Literal["success", "failure"]
     rows: List[dict[str, Any]] = Field(default_factory=list)
     row_count: int = 0
+
+    @field_validator("rows")
+    @classmethod
+    def make_rows_json_safe(cls, rows: List[dict[str, Any]]) -> List[dict[str, Any]]:
+        """Normalise driver types on the way out.
+
+        Every SQL tool builds its result through this model, so doing it here
+        means no tool can leak a Decimal or a datetime into the JSON that is
+        sent to the model.
+        """
+
+        return json_safe_rows(rows)
     truncated: bool = False
     artifact: str | None = None
     sql_query: str | None = None

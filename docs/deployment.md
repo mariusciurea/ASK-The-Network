@@ -65,8 +65,9 @@ Railway injects `PORT`; both images bind `0.0.0.0:$PORT`.
 | `SESSION_SERVICE_URI` | same as `DB_URL` | Otherwise conversations live in a SQLite file that is wiped on every deploy |
 | `GOOGLE_API_KEY` | your key | The agent cannot answer without it |
 | `JWT_SECRET_KEY` | 32+ random characters | Anyone who can read this repo could otherwise forge a token |
+| `LIBRARY_LOG_LEVEL` | `WARNING` | `google_adk` and `httpx` log one line per internal step; Railway drops messages above 500/sec and the useful lines go with them |
 | `ENVIRONMENT` | `production` | Turns on the startup check for unsafe defaults |
-| `ENABLE_DEV_UI` | `false` | The ADK dev UI has no authentication of its own |
+| `ENABLE_DEV_UI` | `false` once the dev UI is no longer needed | It has no authentication of its own |
 | `ALLOWED_ORIGINS` | the frontend's public URL | Replaces the `*` CORS policy |
 
 Generate the secret with:
@@ -74,6 +75,17 @@ Generate the secret with:
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
+
+Set it without the value passing through your shell history:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(48), end='')" \
+  | railway variable set JWT_SECRET_KEY --stdin --service <backend> --skip-deploys
+```
+
+`ENVIRONMENT=production` makes the app refuse to start with the default JWT
+secret, a secret under 32 characters, or the local database URL. An enabled dev
+UI is only a warning, so manual testing keeps working.
 
 ### frontend
 
@@ -97,9 +109,15 @@ that the ADK endpoints are now authenticated - which is the point.
 
 ## Security notes
 
-* Every ADK endpoint now requires a bearer token, and the token's identity must
-  match the `userId` in the URL or in the body of `/run`. Before this change
-  anyone could list and read another user's sessions and artifacts.
+* **The agent endpoints are currently open.** `AuthMiddleware` exists and is
+  tested, but its registration is commented out in `backend/services.py` so the
+  ADK dev UI - which has no login screen - stays usable for manual testing.
+  While it is off, anyone who knows the backend URL can run the agent, spend
+  the Gemini quota and read every session and artifact. Uncomment
+  `app.add_middleware(AuthMiddleware)` before this is used by anyone but you,
+  and keep the backend URL private until then.
+* With the middleware on, every ADK endpoint requires a bearer token and the
+  token's identity must match the `userId` in the URL or in the body of `/run`.
 * `ENVIRONMENT=production` refuses to start with the default JWT secret, with a
   secret under 32 characters, with the local database URL, or with the dev UI
   enabled.
