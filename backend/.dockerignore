@@ -1,0 +1,17 @@
+# Build context = this directory (see the Dockerfile header).
+__pycache__/
+**/__pycache__
+**/*.pyc
+**/*.pyo
+
+# local runtime state - must never be baked into an image
+.env
+*.db
+network_agent/.adk/
+
+# not needed at runtime
+tests/
+README.md
+**/README.md
+railway.json
+Dockerfile
