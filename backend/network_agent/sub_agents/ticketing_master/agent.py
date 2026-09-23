@@ -1,4 +1,5 @@
 from google.adk.agents import Agent
+from google.genai import types
 
 from backend.network_agent.sub_agents.ticketing_master.prompt import TICKETING_MASTER_INSTRUCTIONS
 from google.adk.skills import load_skill_from_dir
@@ -7,6 +8,13 @@ from google.adk.tools.skill_toolset import SkillToolset
 from backend.core.settings import settings
 
 from backend.network_agent.sub_agents.common_tools import send_sql_command
+from backend.network_agent.sub_agents.ticketing_master.callbacks import validate_sql_before_execution
+from backend.network_agent.sub_agents.ticketing_master.data_tools import (
+    describe_schema,
+    get_ticket,
+    lookup_column_values,
+    run_metric,
+)
 from backend.network_agent.sub_agents.ticketing_master.tools import (
     generate_report,
     generate_chart,
@@ -23,5 +31,21 @@ ticketing_master_agent = Agent(
     model=settings.MODEL_NAME,
     description="An agent that handles ticketing related questions, generates reports, charts, and Excel exports from network ticket data.",
     instruction=TICKETING_MASTER_INSTRUCTIONS,
-    tools=[ticketing_skill_toolset, send_sql_command, generate_report, generate_chart, export_to_excel],
+    # Same question, same SQL: sampling is the enemy of a reproducible report.
+    generate_content_config=types.GenerateContentConfig(
+        temperature=settings.MODEL_TEMPERATURE,
+    ),
+    # Queries that contradict the semantic layer never reach the database.
+    before_tool_callback=validate_sql_before_execution,
+    tools=[
+        ticketing_skill_toolset,
+        describe_schema,
+        lookup_column_values,
+        get_ticket,
+        run_metric,
+        send_sql_command,
+        generate_report,
+        generate_chart,
+        export_to_excel,
+    ],
 )
