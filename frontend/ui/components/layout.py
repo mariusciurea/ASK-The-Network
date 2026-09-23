@@ -1,29 +1,25 @@
+"""Layout manager."""
+
+from typing import Sequence
+
 import streamlit as st
-from typing import List
+
 from frontend.ui.components.base import BaseComponent
 
 
 class Layout:
     """Main layout manager for the application"""
 
-    def __init__(self):
-        self.sidebar_components = []
-        self.main_components = []
+    @staticmethod
+    def render(components: Sequence[BaseComponent]) -> None:
+        """Render every component in its section, sidebar first."""
 
-    def render(self, components: List[BaseComponent]):
-        """Render all components in their appropriate sections"""
+        sidebar_components = [c for c in components if c.is_sidebar]
+        main_components = [c for c in components if not c.is_sidebar]
 
-        for component in components:
-            if hasattr(component, 'is_sidebar') and component.is_sidebar:
-                self.sidebar_components.append(component)
-            else:
-                self.main_components.append(component)
-
-        # sidebar components
         with st.sidebar:
-            for component in self.sidebar_components:
+            for component in sidebar_components:
                 component.render()
 
-        # main components
-        for component in self.main_components:
+        for component in main_components:
             component.render()

@@ -66,6 +66,9 @@ def create_access_token(user: User) -> str:
     payload = {
         "sub": str(user.id),
         "username": user.username,
+        # The frontend uses the email as the ADK user id, so the middleware
+        # needs it in the token to verify ownership of a session.
+        "email": user.email,
         "exp": expires_at,
     }
     return jwt.encode(

@@ -30,7 +30,7 @@ The skill determines which sub-agent to use based on:
 ## Sub-agents
 - **RadioNetworkAgent**: Converts natural language requests related to radio network elements into SQL queries for database interactions.
 - **PlanningNetworkAgent**: If the user asks for free loopback IP addresses, always delegate the request to planning_agent.
-- **TicketingMasterAgent**: Converts natural language requests related to tickets into SQL queries for database interactions
+- **TicketingMasterAgent**: Answers ticket questions from the ticket database - named metrics first, text-to-SQL as fallback - and returns reports, charts and Excel exports
 
 
 ## Examples
@@ -57,5 +57,5 @@ The skill determines which sub-agent to use based on:
 I need to delegate this task to **TicketingMasterAgent** as it is the one taking care of tickets data
 
 **TicketingMasterAgent**
-- Based on the user prompt I will make this SQL query: SELECT ..... and send call the send_to_sql() function to get tickets
-information from the database
+- Based on the user prompt I resolve "transport issue" to a real subject value, then call
+run_metric('top_resolutions', subject=...) and report the result

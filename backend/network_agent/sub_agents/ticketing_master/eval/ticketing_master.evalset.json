@@ -1,0 +1,221 @@
+{
+  "eval_set_id": "ticketing_master",
+  "name": "ticketing_master regression set",
+  "description": "Questions with a known correct behaviour. Run after every change to semantic_layer.yaml: adk eval backend/network_agent/sub_agents/ticketing_master backend/network_agent/sub_agents/ticketing_master/eval/ticketing_master.evalset.json",
+  "eval_cases": [
+    {
+      "eval_id": "location_uses_loc_identifier",
+      "conversation": [
+        {
+          "invocation_id": "location-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "What is the most common resolution for the tickets on site DZR1Y?" }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              { "name": "run_metric", "args": { "metric_name": "top_resolutions", "loc_identifier": "DZR1Y" } }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "The most frequent resolution category for tickets filtered on loc_identifier = 'DZR1Y', with the ticket count per category." }]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "unknown_term_is_looked_up",
+      "conversation": [
+        {
+          "invocation_id": "lookup-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "How many link down tickets do we have?" }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              { "name": "lookup_column_values", "args": { "column": "subject", "search_term": "link down" } },
+              { "name": "run_metric", "args": { "metric_name": "ticket_volume_by_subject", "subject": "Link Down" } }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "The number of tickets with subject = 'Link Down', stating the filter that was applied." }]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "city_name_cannot_be_resolved",
+      "conversation": [
+        {
+          "invocation_id": "city-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "Give me the tickets from the Berlin region." }]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "Locations are stored as coded site identifiers in loc_identifier and there is no city mapping, so Berlin cannot be resolved. Asks the user for the site code instead of searching the free text." }]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "mttr_is_refused",
+      "conversation": [
+        {
+          "invocation_id": "mttr-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "What is the average time to fix a Link Down incident?" }]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "The dataset has no resolution timestamp, so MTTR cannot be computed. Offers SLA-window statistics instead, clearly labelled as the SLA target rather than the repair time." }]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "single_ticket_details",
+      "conversation": [
+        {
+          "invocation_id": "ticket-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "Show me everything about ticket Z_INM200900A001." }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              { "name": "get_ticket", "args": { "ticket_number": "Z_INM200900A001" } }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "Status, priority, subject, network element, location and resolution of ticket Z_INM200900A001." }]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "sla_at_risk_is_a_metric",
+      "conversation": [
+        {
+          "invocation_id": "sla-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "Which incident SLAs are about to expire?" }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              { "name": "run_metric", "args": { "metric_name": "sla_at_risk", "ticket_type": "INM" } }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "Active incidents sorted by SLA deadline, noting that the remaining hours are relative to the dataset reference date." }]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "recurrence_on_element",
+      "conversation": [
+        {
+          "invocation_id": "recurrence-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "How often did alarms repeat on network element OXVOWF7?" }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              { "name": "run_metric", "args": { "metric_name": "recurrence_by_element", "network_element_identifier": "OXVOWF7" } }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "Subjects that occurred more than once on OXVOWF7, with occurrence counts and the first and last occurrence." }]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "excel_export_of_priority_distribution",
+      "conversation": [
+        {
+          "invocation_id": "excel-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "Put the ticket distribution by priority for March 2026 in Excel." }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "run_metric",
+                "args": {
+                  "metric_name": "ticket_distribution_by_priority",
+                  "date_from": "2026-03-01",
+                  "date_to": "2026-04-01"
+                }
+              },
+              { "name": "export_to_excel", "args": {} }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "The distribution of tickets per priority for March 2026, exported as an .xlsx artifact and summarised in the answer." }]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "explicit_text_search_is_allowed",
+      "conversation": [
+        {
+          "invocation_id": "text-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "Search the resolution texts for tickets that mention a fiber splice." }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              {
+                "name": "send_sql_command",
+                "args": {
+                  "sql_query": "SELECT ticket_number, subject, response_subject, response_description FROM ticket_data WHERE response_description LIKE '%fiber splice%' LIMIT 50"
+                }
+              }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "The tickets whose response_description mentions a fiber splice, noting that this was an explicit free-text search." }]
+          }
+        }
+      ]
+    },
+    {
+      "eval_id": "active_clusters_by_problem",
+      "conversation": [
+        {
+          "invocation_id": "clusters-1",
+          "user_content": {
+            "role": "user",
+            "parts": [{ "text": "Do we have several open tickets for the same problem right now? Where?" }]
+          },
+          "intermediate_data": {
+            "tool_uses": [
+              { "name": "run_metric", "args": { "metric_name": "active_clusters" } }
+            ]
+          },
+          "final_response": {
+            "role": "model",
+            "parts": [{ "text": "Clusters of active tickets grouped by subject and location, with the ticket numbers of each cluster." }]
+          }
+        }
+      ]
+    }
+  ]
+}

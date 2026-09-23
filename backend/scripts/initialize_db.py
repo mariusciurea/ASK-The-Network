@@ -80,5 +80,16 @@ def init_db(force_reload: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    force=True
-    init_db(force_reload=force)
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Create the tables and load the CSV seed data.")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Delete the existing tickets and reload them from the CSV file.",
+    )
+    args = parser.parse_args()
+
+    # Deleting every ticket used to be the hardcoded default, which is not
+    # something a deployment script should do on its own.
+    init_db(force_reload=args.force)
