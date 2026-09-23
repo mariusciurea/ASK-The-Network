@@ -2,11 +2,14 @@
 #
 # Railway service settings:
 #   Root Directory  = /frontend
-#   Dockerfile Path = frontend/Dockerfile
+#   Dockerfile Path = /frontend/Dockerfile
 #
-# Railway keeps the repository prefix in the build context, so every path below
-# is relative to the repository root - `COPY requirements.txt` would look for
-# /requirements.txt and fail the build.
+# With a Root Directory set, the build context is that directory itself: the
+# context root holds requirements.txt, main.py, ui/ ... and nothing above it.
+# So paths here are relative to frontend/, and `COPY frontend/...` would fail
+# with "/frontend: not found".
+#
+# docker compose uses the same context (see docker-compose.yaml).
 
 FROM python:3.13-slim
 
@@ -24,10 +27,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 # Dependencies first: this layer stays cached until requirements.txt changes.
-COPY frontend/requirements.txt ./frontend/requirements.txt
-RUN pip install --no-cache-dir -r frontend/requirements.txt
+COPY requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY frontend ./frontend
+# The package must land at /app/frontend so `frontend.main` is importable.
+COPY . ./frontend
 
 # Run as an unprivileged user.
 RUN useradd --create-home --uid 10001 appuser && chown -R appuser:appuser /app

@@ -12,29 +12,46 @@ backend  service  (FastAPI + ADK)   <-- frontend calls it
 frontend service  (Streamlit)       <-- public URL, the only one users open
 ```
 
-## Why the build was failing
+## How the build context works here
 
-With **Root Directory = `/frontend`**, Railway loads the Dockerfile as
-`frontend/Dockerfile` but keeps the repository prefix in the build context. So
-`COPY requirements.txt .` looked for `/requirements.txt`, which is not in the
-context:
+Both services set a **Root Directory** (`/frontend` and `/backend`), and that
+directory *is* the build context. Its root holds `requirements.txt`, `main.py`,
+`ui/` - nothing from above it exists in the context:
 
 ```
-[ERRO] [3/5] COPY requirements.txt .
-failed to compute cache key: "/requirements.txt": not found
+frontend/            <- context root, this is "."
+  requirements.txt   <- COPY requirements.txt .      works
+  main.py
+  ui/
 ```
 
-Every path in both Dockerfiles is now relative to the repository root
-(`COPY frontend/requirements.txt ...`), which is what that setup requires.
+So the Dockerfiles use paths relative to their own directory. A repository-root
+path fails the build before anything is installed:
+
+```
+[ERRO] [3/6] COPY frontend/requirements.txt ./frontend/requirements.txt
+failed to compute cache key: "/frontend": not found
+```
+
+The same applies to `.dockerignore`: BuildKit reads it from the context root,
+which is why there is one in `backend/` and one in `frontend/`, not at the
+repository root. `docker-compose.yaml` builds each image from the same
+directory, so local builds and Railway behave identically.
+
+If a build ever fails on the very first `COPY`, check the Root Directory
+setting before touching the Dockerfile - the two have to agree.
 
 ## Service settings
 
 | Setting | frontend | backend |
 |---|---|---|
 | Root Directory | `/frontend` | `/backend` |
-| Builder | Dockerfile (auto-detected) | Dockerfile (auto-detected) |
+| Dockerfile Path | `/frontend/Dockerfile` | `/backend/Dockerfile` |
 | Healthcheck path | `/_stcore/health` | `/health` |
-| Config as code | `frontend/railway.json` | `backend/railway.json` |
+| Config as code | `railway.json` (inside the root directory) | `railway.json` (inside the root directory) |
+
+These are the settings the project already uses - the Dockerfiles are written
+for them, so nothing has to change in the dashboard.
 
 Railway injects `PORT`; both images bind `0.0.0.0:$PORT`.
 

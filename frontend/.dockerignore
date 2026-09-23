@@ -1,0 +1,11 @@
+# Build context = this directory (see the Dockerfile header).
+__pycache__/
+**/__pycache__
+**/*.pyc
+**/*.pyo
+
+.env
+*.db
+
+railway.json
+Dockerfile

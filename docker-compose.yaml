@@ -3,8 +3,9 @@
 #   docker compose up --build
 #   docker compose run --rm backend python -m backend.scripts.initialize_db
 #
-# The build context is the repository root for both images, which is also how
-# Railway builds them.
+# Each image is built from its own directory, exactly like Railway builds them
+# with Root Directory = /backend and /frontend. Keep it that way: the COPY
+# paths in the Dockerfiles depend on it.
 
 services:
   db:
@@ -26,8 +27,7 @@ services:
 
   backend:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend
     container_name: ask-network-backend
     restart: unless-stopped
     depends_on:
@@ -46,8 +46,7 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
     container_name: ask-network-frontend
     restart: unless-stopped
     depends_on:
