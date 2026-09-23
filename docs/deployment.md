@@ -1,0 +1,107 @@
+# Deployment
+
+Two Railway services from this one repository, plus the MySQL plugin:
+
+```
+MySQL (Railway plugin)
+   ^
+   | private network
+backend  service  (FastAPI + ADK)   <-- frontend calls it
+   ^
+   | private network
+frontend service  (Streamlit)       <-- public URL, the only one users open
+```
+
+## Why the build was failing
+
+With **Root Directory = `/frontend`**, Railway loads the Dockerfile as
+`frontend/Dockerfile` but keeps the repository prefix in the build context. So
+`COPY requirements.txt .` looked for `/requirements.txt`, which is not in the
+context:
+
+```
+[ERRO] [3/5] COPY requirements.txt .
+failed to compute cache key: "/requirements.txt": not found
+```
+
+Every path in both Dockerfiles is now relative to the repository root
+(`COPY frontend/requirements.txt ...`), which is what that setup requires.
+
+## Service settings
+
+| Setting | frontend | backend |
+|---|---|---|
+| Root Directory | `/frontend` | `/backend` |
+| Builder | Dockerfile (auto-detected) | Dockerfile (auto-detected) |
+| Healthcheck path | `/_stcore/health` | `/health` |
+| Config as code | `frontend/railway.json` | `backend/railway.json` |
+
+Railway injects `PORT`; both images bind `0.0.0.0:$PORT`.
+
+## Environment variables
+
+### backend
+
+| Variable | Value | Why |
+|---|---|---|
+| `DB_URL` | `mysql+pymysql://root:${{MySQL.MYSQL_ROOT_PASSWORD}}@${{MySQL.RAILWAY_PRIVATE_DOMAIN}}:3306/railway` | Ticket database |
+| `SESSION_SERVICE_URI` | same as `DB_URL` | Otherwise conversations live in a SQLite file that is wiped on every deploy |
+| `GOOGLE_API_KEY` | your key | The agent cannot answer without it |
+| `JWT_SECRET_KEY` | 32+ random characters | Anyone who can read this repo could otherwise forge a token |
+| `ENVIRONMENT` | `production` | Turns on the startup check for unsafe defaults |
+| `ENABLE_DEV_UI` | `false` | The ADK dev UI has no authentication of its own |
+| `ALLOWED_ORIGINS` | the frontend's public URL | Replaces the `*` CORS policy |
+
+Generate the secret with:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(48))"
+```
+
+### frontend
+
+| Variable | Value | Why |
+|---|---|---|
+| `BASE_URL` | `http://<backend-service>.railway.internal:8082` | Private networking: no public hop, no egress cost |
+| `AGENT_TIMEOUT_SECONDS` | `180` (default) | An agent turn with tools and charts is slow |
+
+If you use the backend's public URL instead, use `https://` and keep in mind
+that the ADK endpoints are now authenticated - which is the point.
+
+## First deploy
+
+1. Push to `master`; both services build from the same commit.
+2. Create the tables and load the seed data once:
+   ```bash
+   railway run --service backend python -m backend.scripts.initialize_db
+   ```
+   Add `--force` only when you want the tickets deleted and reloaded from the CSV.
+3. Open the frontend URL, register an account, accept the terms.
+
+## Security notes
+
+* Every ADK endpoint now requires a bearer token, and the token's identity must
+  match the `userId` in the URL or in the body of `/run`. Before this change
+  anyone could list and read another user's sessions and artifacts.
+* `ENVIRONMENT=production` refuses to start with the default JWT secret, with a
+  secret under 32 characters, with the local database URL, or with the dev UI
+  enabled.
+* Both images run as a non-root user.
+* Secrets belong in Railway variables, never in `settings.py`. The defaults in
+  the code exist only so the app runs locally out of the box.
+
+## Scaling
+
+The backend runs a single uvicorn worker on purpose. The agent is I/O bound, so
+one worker handles concurrent users, but the ADK artifact store is local to the
+container: a second worker or replica would not see artifacts written by the
+first. Before raising `WEB_CONCURRENCY` or `numReplicas`, move artifacts to a
+shared store (GCS) - sessions already move to MySQL with `SESSION_SERVICE_URI`.
+
+## Local run
+
+```bash
+docker compose up --build
+docker compose run --rm backend python -m backend.scripts.initialize_db
+# frontend: http://localhost:8501
+```

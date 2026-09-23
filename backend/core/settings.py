@@ -4,6 +4,11 @@ from pathlib import Path
 from pydantic_settings import BaseSettings
 
 
+# Defaults that are fine locally and must never reach production.
+DEFAULT_JWT_SECRET_KEY = "change-me-in-production"
+DEFAULT_DB_URL = "mysql+pymysql://root:Changeme_123@localhost:3306/radio_network_data"
+
+
 class Settings(BaseSettings):
     """Application settings"""
 
@@ -14,7 +19,9 @@ class Settings(BaseSettings):
     DATA_DIR: Path = WORKING_DIR / "backend/data"
 
     #db
-    DB_URL:str ="mysql+pymysql://root:Changeme_123@localhost:3306/radio_network_data"
+    # Local default only. In production set DB_URL (and SESSION_SERVICE_URI)
+    # from the environment - see check_production_readiness below.
+    DB_URL: str = DEFAULT_DB_URL
 
     # model
     MODEL_NAME: str = "gemini-3.5-flash"
@@ -33,9 +40,56 @@ class Settings(BaseSettings):
     VALUE_CACHE_TTL_SECONDS: int = 600
 
     # auth
-    JWT_SECRET_KEY: str = "change-me-in-production"
+    JWT_SECRET_KEY: str = DEFAULT_JWT_SECRET_KEY
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 60 * 24
+
+    # deployment
+    ENVIRONMENT: str = "local"
+    # Browser origins allowed to call the API. "*" is fine locally, but in
+    # production it should list the frontend URL.
+    ALLOWED_ORIGINS: str = "*"
+    # The ADK dev UI has no authentication of its own.
+    ENABLE_DEV_UI: bool = True
+
+    @property
+    def is_production(self) -> bool:
+        return self.ENVIRONMENT.strip().lower() in ("production", "prod")
+
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        """CORS origins as a list, from a comma-separated env variable."""
+
+        return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",") if origin.strip()]
+
+    def check_production_readiness(self) -> None:
+        """Refuse to start a production deployment with unsafe defaults.
+
+        A forgotten JWT_SECRET_KEY means anyone who has read this repository can
+        mint a valid token for any user, so this fails loudly at startup instead
+        of silently serving an open API.
+
+        Raises:
+            RuntimeError: A required production setting is still at its default.
+        """
+
+        if not self.is_production:
+            return
+
+        problems = []
+        if self.JWT_SECRET_KEY == DEFAULT_JWT_SECRET_KEY:
+            problems.append("JWT_SECRET_KEY is still the default value")
+        elif len(self.JWT_SECRET_KEY) < 32:
+            problems.append("JWT_SECRET_KEY is shorter than 32 characters")
+        if self.DB_URL == DEFAULT_DB_URL:
+            problems.append("DB_URL still points at the local development database")
+        if self.ENABLE_DEV_UI:
+            problems.append("ENABLE_DEV_UI exposes the unauthenticated ADK dev UI")
+
+        if problems:
+            raise RuntimeError(
+                "Unsafe configuration for ENVIRONMENT=production: " + "; ".join(problems)
+            )
 
 
 settings = Settings()
